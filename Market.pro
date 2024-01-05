@@ -11,11 +11,13 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    marketwindow.cpp
+    marketwindow.cpp \
+    product.cpp
 
 HEADERS += \
     mainwindow.h \
-    marketwindow.h
+    marketwindow.h \
+    product.h
 
 FORMS += \
     mainwindow.ui \
