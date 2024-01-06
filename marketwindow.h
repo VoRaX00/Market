@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QModelIndex>
 #include <QHash>
+#include <QStandardItemModel>
+#include <QStringListModel>
 #include "product.h"
 
 namespace Ui {
@@ -18,9 +20,14 @@ public:
     explicit MarketWindow(QWidget *parent = nullptr);
     ~MarketWindow();
 
+    void setUserName(const QString& _userName);
+
 private:
     void drawProduct();
     void readFile();
+    void clearBacket();
+    void clearColumnBacket();
+    uint countBasket(int row);
 
 public slots:
     void addProductInList(QModelIndex index);
@@ -30,7 +37,8 @@ private slots:
 
 private:
     QList<Product> products;
-    QHash<Product, unsigned> buyProducts;
+    QHash<Product, unsigned> backet;
+    QString userName;
     Ui::MarketWindow *ui;
 };
 

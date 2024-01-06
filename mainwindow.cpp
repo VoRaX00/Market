@@ -20,6 +20,8 @@ void MainWindow::on_pushButton_clicked()
     if(ui->lineEdit->text().isEmpty()){
         return;
     }
+    QString userName = ui->lineEdit->text();
+    marketWindow->setUserName(userName);
     marketWindow->show();
     this->close();
 }

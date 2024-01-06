@@ -1,12 +1,8 @@
 #include "marketwindow.h"
 #include "ui_marketwindow.h"
 #include <fstream>
-#include <QRegularExpression>
 #include <QDebug>
-#include <string>
 #include <QFile>
-#include <QStandardItemModel>
-#include <QStringListModel>
 
 MarketWindow::MarketWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -21,13 +17,18 @@ MarketWindow::~MarketWindow()
     delete ui;
 }
 
+void MarketWindow::setUserName(const QString &_userName)
+{
+    userName = _userName;
+}
+
 void MarketWindow::drawProduct()
 {
     readFile();
 
     QStandardItemModel* model = new QStandardItemModel(this);
 
-    QStringList nameColumn = {"Название" , "Количество" , "Цена"};
+    QStringList nameColumn = {"Название" , "Количество" , "Цена" , "В корзине"};
     model->setHorizontalHeaderLabels(nameColumn);
 
     ui->tableView->setModel(model);
@@ -40,6 +41,7 @@ void MarketWindow::drawProduct()
         list.append(new QStandardItem(i.getName()));
         list.append(new QStandardItem(QString::number(i.getCount())));
         list.append(new QStandardItem(QString::number(i.getPrice())));
+        list.append(new QStandardItem(QString::number(0)));
         model->appendRow(list);
         list.clear();
     }
@@ -74,45 +76,83 @@ void MarketWindow::readFile()
     file.close();
 }
 
+void MarketWindow::clearBacket()
+{
+    backet.clear();
+}
+
+void MarketWindow::clearColumnBacket()
+{
+    QAbstractItemModel* model = ui->tableView->model();
+    uint columnBacket = 3;
+    for(int i=0; i < model->rowCount(); i++){
+        QModelIndex index = model->index(i, columnBacket);
+        model->setData(index, 0);
+    }
+}
+
+uint MarketWindow::countBasket(int row)
+{
+    QAbstractItemModel* model = ui->tableView->model();
+    QModelIndex index = model->index(row, 3);
+    QVariant data = model->data(index);
+    return data.toUInt();
+}
+
 void MarketWindow::addProductInList(QModelIndex index){
     QAbstractItemModel* model = ui->tableView->model();
     int row = index.row();
     const int countColumn = 3;
     QStringList list;
+
     for(int i=0; i < countColumn; i++){
         QModelIndex idx = model->index(row, i);
         QVariant data = model->data(idx);
-        list.append(data.toString());
+
+        list.append(data.toString()); //добавляем в список значение ячейки из строки
         if(i==1 && data.toInt() != 0){
-            model->setData(idx, QVariant(data.toInt() - 1));
-        }else if(i== 1 && data.toInt() == 0){
+            model->setData(idx, QVariant(data.toInt() - 1)); // -1 у колонки "Количество"
+            model->setData(model->index(row, 3), countBasket(row) + 1); // +1 в колонку "В корзине"
+        }else if(i == 1 && data.toInt() == 0)
             return;
-        }
     }
+
     Product p(list.at(0), list.at(2).toUInt());
-    buyProducts[p]++;
+    backet[p]++;
 
     qDebug() << p.getName() << p.getCount() << p.getPrice();
-    qDebug() << buyProducts[p];
+    qDebug() << backet[p];
 }
 
 void MarketWindow::on_orderButton_clicked()
 {
-    if(buyProducts.empty())
+    if(backet.empty())
         return;
 
-    QFile file(":/purchase/cheque.txt");
-    if(file.open(QIODevice::WriteOnly | QIODevice::Append)){
+    QFile file("C:/Users/nikit/QtProjects/Market/Market/cheque.txt");
+
+    if(file.open(QIODevice::WriteOnly | QIODevice::Text)){
         QTextStream stream(&file);
-
-        for(auto i : buyProducts.keys()){
+        stream << "Имя покупателя: "<< userName << "\n";
+        unsigned sum = 0;
+        for(auto i : backet.keys()){
             QString date = "";
-            date += i.getName();
-
+            unsigned price = i.getPrice() * backet[i];
+            date = i.getName() + " | кол-во: " + QString::number(backet[i]) + " | Цена: " +
+            QString::number(price);
+            sum += price;
+            stream << date << "\n";
         }
+        stream << "Итого: " + QString::number(sum);
+
+        clearColumnBacket();
+        clearBacket();
     }
     else{
-        qDebug() << "file don't open!";
+        //qDebug() << "file don't open!";
+        qDebug() << "Error opening file: " << file.errorString();
     }
+
+    file.close();
 }
 

@@ -2,7 +2,4 @@
     <qresource prefix="/available">
         <file>product.txt</file>
     </qresource>
-    <qresource prefix="/purchase">
-        <file>cheque.txt</file>
-    </qresource>
 </RCC>
