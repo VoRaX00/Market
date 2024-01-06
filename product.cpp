@@ -1,11 +1,12 @@
 #include "product.h"
-
 Product::Product()
 {
 
 }
 
 Product::Product(QString _name, unsigned int _count, unsigned int _price) : name(_name), count(_count), price(_price){}
+
+Product::Product(QString _name, unsigned int _price) : name(_name), price(_price){}
 
 void Product::setName(QString &_name)
 {
@@ -36,3 +37,5 @@ unsigned int Product::getPrice() const
 {
     return price;
 }
+
+

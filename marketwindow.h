@@ -2,6 +2,8 @@
 #define MARKETWINDOW_H
 
 #include <QMainWindow>
+#include <QModelIndex>
+#include <QHash>
 #include "product.h"
 
 namespace Ui {
@@ -20,8 +22,15 @@ private:
     void drawProduct();
     void readFile();
 
+public slots:
+    void addProductInList(QModelIndex index);
+
+private slots:
+    void on_orderButton_clicked();
+
 private:
     QList<Product> products;
+    QHash<Product, unsigned> buyProducts;
     Ui::MarketWindow *ui;
 };
 
