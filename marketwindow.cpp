@@ -5,12 +5,15 @@
 #include <QDebug>
 #include <string>
 #include <QFile>
+#include <QStandardItemModel>
+#include <QStringListModel>
 
 MarketWindow::MarketWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MarketWindow)
 {
     ui->setupUi(this);
+    drawProduct();
 }
 
 MarketWindow::~MarketWindow()
@@ -21,6 +24,27 @@ MarketWindow::~MarketWindow()
 void MarketWindow::drawProduct()
 {
     readFile();
+
+
+    QStandardItemModel* model = new QStandardItemModel(this);
+
+    QStringList nameColumn = {"Название" , "Количество" , "Цена"};
+    model->setHorizontalHeaderLabels(nameColumn);
+
+    ui->tableView->setModel(model);
+
+    ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers); //блокировка возможности изменения ячеек внутри приложения
+    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch); //растягивает коллонки под размер таблицы
+
+
+    QList<QStandardItem*>list;
+    for(auto i : products){
+        list.append(new QStandardItem(i.getName()));
+        list.append(new QStandardItem(QString::number(i.getCount())));
+        list.append(new QStandardItem(QString::number(i.getPrice())));
+        model->appendRow(list);
+        list.clear();
+    }
 }
 
 void MarketWindow::readFile()
@@ -49,9 +73,3 @@ void MarketWindow::readFile()
     }
 
 }
-
-void MarketWindow::on_pushButton_clicked()
-{
-    drawProduct();
-}
-
