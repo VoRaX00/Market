@@ -105,12 +105,26 @@ void MarketWindow::addProductInList(QModelIndex index){
     QAbstractItemModel* model = ui->tableView->model();
     int row = index.row();
 
+    uint prevCount = model->data(model->index(row, 3)).toUInt();
+
     Changer* changer = new Changer(row, model);
     changer->exec();
 
     uint count = model->data(model->index(row, 3)).toUInt();
     QString name = model->data(model->index(row, 0)).toString();
     uint price = model->data(model->index(row, 2)).toUInt();
+    uint allCount = model->data(model->index(row,1)).toUInt();
+    uint currentCount;
+    if(prevCount < count){
+        currentCount = allCount - count;
+    }
+    else if(prevCount > count){
+        currentCount = allCount + prevCount-count;
+    }
+    else{
+        currentCount = allCount;
+    }
+    model->setData(model->index(row, 1), currentCount);
 
     Product p(name, price);
     backet[p] = count;
