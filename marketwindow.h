@@ -7,7 +7,7 @@
 #include <QStandardItemModel>
 #include <QStringListModel>
 #include "product.h"
-
+#include "changer.h"
 namespace Ui {
 class MarketWindow;
 }

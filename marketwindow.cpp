@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QFile>
 
+
 MarketWindow::MarketWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MarketWindow)
@@ -102,24 +103,16 @@ uint MarketWindow::countBasket(int row)
 void MarketWindow::addProductInList(QModelIndex index){
     QAbstractItemModel* model = ui->tableView->model();
     int row = index.row();
-    const int countColumn = 3;
-    QStringList list;
 
-    for(int i=0; i < countColumn; i++){
-        QModelIndex idx = model->index(row, i);
-        QVariant data = model->data(idx);
+    Changer* changer = new Changer(row, model);
+    changer->exec();
 
-        list.append(data.toString()); //добавляем в список значение ячейки из строки
-        if(i==1 && data.toInt() != 0){
-            model->setData(idx, QVariant(data.toInt() - 1)); // -1 у колонки "Количество"
-            model->setData(model->index(row, 3), countBasket(row) + 1); // +1 в колонку "В корзине"
-        }else if(i == 1 && data.toInt() == 0)
-            return;
-    }
+    uint count = model->data(model->index(row, 3)).toUInt();
+    QString name = model->data(model->index(row, 0)).toString();
+    uint price = model->data(model->index(row, 2)).toUInt();
 
-    Product p(list.at(0), list.at(2).toUInt());
-    backet[p]++;
-
+    Product p(name, price);
+    backet[p] = count;
     qDebug() << p.getName() << p.getCount() << p.getPrice();
     qDebug() << backet[p];
 }
@@ -152,7 +145,5 @@ void MarketWindow::on_orderButton_clicked()
         //qDebug() << "file don't open!";
         qDebug() << "Error opening file: " << file.errorString();
     }
-
     file.close();
 }
-

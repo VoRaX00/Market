@@ -7,22 +7,22 @@ class Product
 {
 public:
     Product();
-    Product(QString _name, unsigned _count, unsigned _price);
-    Product(QString _name, unsigned _price);
+    Product(QString _name, uint _count, uint _price);
+    Product(QString _name, uint _price);
 
     void setName(QString& _name);
     QString getName() const;
 
-    void setCount(unsigned _count);
+    void setCount(uint _count);
     unsigned getCount() const;
 
-    void setPrice(unsigned _price);
+    void setPrice(uint _price);
     unsigned getPrice() const;
 
 private:
     QString name;
-    unsigned count=0;
-    unsigned price;
+    uint count=0;
+    uint price;
 };
 
 inline bool operator ==(const Product &p1, const Product& p2)

@@ -1,12 +1,10 @@
 #include "product.h"
-Product::Product()
-{
 
-}
+Product::Product(){}
 
-Product::Product(QString _name, unsigned int _count, unsigned int _price) : name(_name), count(_count), price(_price){}
+Product::Product(QString _name, uint _count, uint _price) : name(_name), count(_count), price(_price){}
 
-Product::Product(QString _name, unsigned int _price) : name(_name), price(_price){}
+Product::Product(QString _name, uint _price) : name(_name), price(_price){}
 
 void Product::setName(QString &_name)
 {
@@ -18,22 +16,22 @@ QString Product::getName() const
     return name;
 }
 
-void Product::setCount(unsigned _count)
+void Product::setCount(uint _count)
 {
     count = _count;
 }
 
-unsigned Product::getCount() const
+uint Product::getCount() const
 {
     return count;
 }
 
-void Product::setPrice(unsigned int _price)
+void Product::setPrice(uint _price)
 {
     price = _price;
 }
 
-unsigned int Product::getPrice() const
+uint Product::getPrice() const
 {
     return price;
 }
