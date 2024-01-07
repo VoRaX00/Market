@@ -10,6 +10,7 @@ MarketWindow::MarketWindow(QWidget *parent) :
     ui(new Ui::MarketWindow)
 {
     ui->setupUi(this);
+    QWidget::setFixedSize(window()->width() , window()->height());
     drawProduct();
 }
 
